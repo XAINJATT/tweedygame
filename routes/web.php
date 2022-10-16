@@ -14,5 +14,29 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('frontend.index');
+});
+Route::get('/game-info', function () {
+    return view('frontend.game-info');
+});
+Route::get('/sign-in', function () {
+    return view('frontend.sign-in');
+});
+Route::get('/multiple-choice', function () {
+    return view('frontend.multiple-choice');
+});
+Route::get('/task-qr', function () {
+    return view('frontend.task-qr');
+});
+Route::get('/task-image', function () {
+    return view('frontend.task-image');
+});
+Route::get('/task-map', function () {
+    return view('frontend.task-map');
+});
+Route::get('/task-image', function () {
+    return view('frontend.task-image');
+});
+Route::get('/404', function () {
+    return view('frontend.404');
 });
