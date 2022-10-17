@@ -35,7 +35,12 @@ class GameInfoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'game_title'=>'required',
+            'game_description'=>'required',
+            'game_image' => 'required|mimes:jpeg,jpg,png,gif|max:10000',
+        ]);
+        
     }
 
     /**

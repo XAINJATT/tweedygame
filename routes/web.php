@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserDataController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,47 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//ADMIN ROUTES
+Route::group(['prefix' => 'admin', 'middleware' => 'isAdmin'], function () {
+    //GAME ROUTES
+    Route::group(['prefix' => 'game'], function () {
+
+        Route::get("add", function () {
+            return view('admin.add_games');
+        })->name('game.add');
+
+        Route::get("manage", function () {
+            return view('admin.manage_games');
+        })->name('game.manage');
+
+        Route::post("game/add/submit", 'App\Http\Controllers\GameInfoController@store')->name('game.add.submit');
+
+        Route::get("edit/{id}", function () {
+            return view('admin.add_games');
+        })->name('game.edit');
+    });
+
+    Route::get('/', function () {
+        return view('admin.index');
+    })->name('admin.home');
+});
+
+Route::get('admin/login', function () {
+    return view('admin.login-in');
+})->name('admin.login');
+
+
+Route::get('/logout', 'App\Http\Controllers\UserDataController@logout')->name('logout.perform');
+
+
+Route::get('/login', function () {
+    return view('frontend.sign-in');
+})->name('user.login');
+
+Route::post('login/submit', 'App\Http\Controllers\UserDataController@index')->name('login.submit');
+
+
+//FRONTED ROUTES
 Route::get('/', function () {
     return view('frontend.index');
 });
