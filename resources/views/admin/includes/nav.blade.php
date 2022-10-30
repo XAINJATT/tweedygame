@@ -39,7 +39,7 @@
             <span class="custom_hemburger"></span>
             <a>
                 <div class="middle d-flex align-items-center">
-                    <h4 class="top_header text-uppercase">Instructions</h4>
+                    <h4 class="top_header text-uppercase">Admin Dashboard</h4>
                 </div>
                 <a style="cursor: pointer; padding:20px;" class="right" onclick="openNav()">
                     <span class="custom_hemburger"></a>

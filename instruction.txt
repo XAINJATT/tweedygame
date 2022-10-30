@@ -1,0 +1,30 @@
+Hi,
+
+First impression: GOOD.
+
+I would need to see it in "comperisome" with the backend before we 100% land it, BUT its ok.
+Some comments:
+
+1. A bit slow - I think its the serverer - so no worries
+
+2. http://game.phpwebexperts.com/game-info.html?
+Comment: I assume its possible to do to "light" formating of text/headline.
+
+3. http://game.phpwebexperts.com/instructions.html
+Comment: Good!
+
+4. http://game.phpwebexperts.com/task-map.html
+Comment: Good!
+
+5. http://game.phpwebexperts.com/task-image.html
+Comment: Good, would LOVE it to have a countdown incase there is a actually timelimit set by admin/gamehost eg 30 min. then they should solve the task within 30 min... and it will be counting down....! :)
+
+6. http://game.phpwebexperts.com/task-qr.html
+Comment: Good!
+
+
+7. http://game.phpwebexperts.com/multiple-choice.html
+Comment: Good.
+
+
+AKA: All good! :)

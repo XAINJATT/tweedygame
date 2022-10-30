@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\GameInfoController;
 use App\Http\Controllers\UserDataController;
+use App\Models\GameInfo;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,20 +20,27 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'admin', 'middleware' => 'isAdmin'], function () {
     //GAME ROUTES
     Route::group(['prefix' => 'game'], function () {
-
         Route::get("add", function () {
             return view('admin.add_games');
         })->name('game.add');
 
         Route::get("manage", function () {
-            return view('admin.manage_games');
+            $data = GameInfoController::show(new GameInfo);
+            return view('admin.manage_games')->with(['data' => $data]);
         })->name('game.manage');
 
         Route::post("game/add/submit", 'App\Http\Controllers\GameInfoController@store')->name('game.add.submit');
 
-        Route::get("edit/{id}", function () {
-            return view('admin.add_games');
+        Route::get("edit/{id}", function ($id) {
+            $game_data = GameInfo::query()->where('id', $id)->first();
+            return view('admin.add_games')->with(['data' => $game_data]);;
         })->name('game.edit');
+
+        Route::get("delete/{id}", function ($id) {
+            $game_data = GameInfo::query()->where('id', $id)->first();
+            return view('admin.add_games')->with(['data' => $game_data]);
+        })->name('game.delete');
+        
     });
 
     Route::get('/', function () {
@@ -56,6 +65,12 @@ Route::post('login/submit', 'App\Http\Controllers\UserDataController@index')->na
 
 //FRONTED ROUTES
 Route::get('/', function () {
+    return view('frontend.index');
+});
+Route::get('/index', function () {
+    return view('frontend.index');
+});
+Route::get('/home', function () {
     return view('frontend.index');
 });
 Route::get('/game-info', function () {
