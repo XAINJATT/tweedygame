@@ -10,36 +10,35 @@
                                 Add New Game
                             </legend>
                             <div class="form-group">
-                                <?php $game_info = @json_decode($data->game_info) ?>
+                                <?php $game_info = @json_decode($data->game_info); ?>
                                 <label for="game_title">Game Title *</label>
-                                <input required value="{{@$game_info->game_title}}" placeholder="Game Title" class="form-control" type="text" name="game_title"
-                                    id="game_title">
+                                <input type="hidden" value="{{ @request('id') }}" name="game__id">
+                                <input @if (empty(request('id'))) required @endif
+                                    value="{{ @$game_info->game_title }}" placeholder="Game Title" class="form-control"
+                                    type="text" name="game_title" id="game_title">
                             </div>
                             <div class="form-group">
                                 <label for="game_code">Game Code *</label>
-                                <input required placeholder="Game Code" value="{{@$data->game_code}}" class="form-control" type="text" name="game_code"
+                                <input @if (empty(request('id'))) required @endif placeholder="Game Code"
+                                    value="{{ @$data->game_code }}" class="form-control" type="text" name="game_code"
                                     id="game_code">
                             </div>
                             <div class="form-group">
                                 <label for="game_password">Game Password *</label>
-                                <input required placeholder="Game Password" value="" value="" class="form-control" type="password" name="game_password"
+                                <input @if (empty(request('id'))) required @endif placeholder="Game Password"
+                                    value="" value="" class="form-control" type="password" name="game_password"
                                     id="game_password">
                             </div>
                             <div class="form-group">
                                 <label for="game_info">Game Information</label>
-                                <input type="text" value="{{@$game_info->overline}}" name="overline" class="form-control my-2" id="overline" placeholder="Overline">
-                                <input type="text" value="{{@$game_info->headline}}" name="headline" class="form-control my-2" id="headline" placeholder="Headline">
-                                <input type="text" value="{{@$game_info->subline}}" name="subline" class="form-control my-2" id="subline" placeholder="Subline">
+                                <input type="text" value="{{ @$game_info->game_information->overline }}" name="overline"
+                                    class="form-control my-2" id="overline" placeholder="Overline">
+                                <input type="text" value="{{ @$game_info->game_information->headline }}" name="headline"
+                                    class="form-control my-2" id="headline" placeholder="Headline">
+                                <input type="text" value="{{ @$game_info->game_information->subline }}" name="subline"
+                                    class="form-control my-2" id="subline" placeholder="Subline">
                             </div>
-                            <style>
-                                #output {
-                                    width: 100%;
-                                    height: auto;
-                                    object-fit: none;
-                                    display: none;
-                                }
-                            </style>
-                           
+
                             {{-- <div class="form-group">
                                 <label for="game_type">Game Type *</label>
                                 <select class="form-select" name="game_type" id="game_type">
@@ -50,11 +49,14 @@
                             </div> --}}
                             <div class="form-group">
                                 <label for="starting_point">Starting Point *</label>
+                                <div id="map"></div>
                                 <div class="input-group">
-                                    <input required type="number" value="{{@$game_info->start->latitude}}" placeholder="Latitude" class="form-control" name="latitude" step="any"
-                                        id="starting_point">
-                                    <input required placeholder="Longitude" value="{{@$game_info->start->longitude}}" type="number" class="form-control" name="longitude" step="any"
-                                        id="starting_point">
+                                    <input @if (empty(request('id'))) required @endif type="number"
+                                        value="{{ @$game_info->start->latitude }}" placeholder="Latitude"
+                                        class="form-control" name="latitude" step="any" id="starting_point">
+                                    <input @if (empty(request('id'))) required @endif placeholder="Longitude"
+                                        value="{{ @$game_info->start->longitude }}" type="number" class="form-control"
+                                        name="longitude" step="any" id="starting_point">
                                 </div>
                             </div>
                             <div class="form-group">
@@ -62,44 +64,68 @@
                                 <div class="input-group">
                                     <div>
                                         <label for="starting_time">Starting Time</label>
-                                        <input required value="{{@$game_info->start->starting_time ?? date('Y-m-d\TH:i:s')}}" type="datetime-local" name="starting_point" class="form-control" step="any"
+                                        <input @if (empty(request('id'))) required @endif
+                                            value="{{ @$game_info->start->starting_time ?? date('Y-m-d\TH:i:s') }}"
+                                            type="datetime-local" name="starting_point" class="form-control" step="any"
                                             name="starting_time" id="starting_time">
                                     </div>
                                     <div>
                                         <label for="ending_time">Ending Time *</label>
-                                        <input required type="datetime-local" value="{{@$game_info->start->ending_time ?? date('Y-m-d\TH:i:s')}}" name="ending_time" class="form-control" step="any"
-                                            id="ending_time">
+                                        <input @if (empty(request('id'))) required @endif type="datetime-local"
+                                            value="{{ @$game_info->start->ending_time ?? date('Y-m-d\TH:i:s') }}"
+                                            name="ending_time" class="form-control" step="any" id="ending_time">
                                     </div>
                                 </div>
                             </div>
+                            @if (empty(request('id')))
+                                <style>
+                                    #output {
+                                        width: 100%;
+                                        height: auto;
+                                        object-fit: none;
+                                        display: none;
+                                    }
+                                </style>
+                            @endif
                             <div class="form-group">
-                                <div  id="image_result">
-                                    <img @if(!empty(@$game_info->game_image)) style="display:block !important" @endif class="img-fluid" width="360" height="600" src="{{asset('img/game/resize/').'/'.@$game_info->game_image->size_360x600 ?? asset('img/game/original/').@$game_info->game_image->orignal}}" alt=""
-                                        id="output">
+                                <div id="image_result">
+                                    <img @if (!empty($game_info->game_image->original)) style="display:block !important" @endif
+                                        class="img-fluid" width="360" height="600"
+                                        src="@if (!empty($game_info->game_image->size_360x600)) {{ asset('img/game/resize/') . '/' . @$game_info->game_image->size_360x600 }}@elseif(!empty($game_info->game_image->original)){{ asset('img/game/original/') . $game_info->game_image->original }} @endif"
+                                        alt="" id="output">
+                                    @if (!empty($game_info->game_image->original))
+                                    <input type="hidden" name="size_360x600"
+                                        value='{{ @$game_info->game_image->size_360x600 }}'>
+                                    <input type="hidden" name="original"
+                                        value='{{ @$game_info->game_image->original}}'>
+                                    @endif
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="game_image">Game Background Image *</label>
-                                <input required accept="image/*" class="form-control" type="file" name="game_image"
-                                    id="game_image">
+
+                                <input @if (empty(request('id'))) required @endif accept="image/*"
+                                    class="form-control" type="file" name="game_image" id="game_image">
                             </div>
                             <div class="form-group">
                                 <label for="game_color">Game Text Color</label>
-                                <input value="{{@$game_info->game_color ?? "#ffc107"}}" class="form-control form-control-color" type="color"
-                                    name="game_color" id="game_color">
+                                <input value="{{ @$game_info->game_color ?? '#ffc107' }}"
+                                    class="form-control form-control-color" type="color" name="game_color"
+                                    id="game_color">
                             </div>
 
                             <div class="form-group">
                                 <label for="bg_opacity">Background Opacity </label>
-                                <input type="range" value="{{@$game_info->game_opacity ?? "0.5"}}" min="0" max="1" step="0.01"
-                                    class="form-range" name="background_opacity" id="bg_opacity">
+                                <input type="range" value="{{ @$game_info->game_opacity ?? '0.5' }}" min="0"
+                                    max="1" step="0.01" class="form-range" name="background_opacity"
+                                    id="bg_opacity">
                             </div>
 
 
                             <div class="form-group">
                                 <label for="game_desc">Game Instructions *</label>
-                                <textarea required rows='4' placeholder="Game Instructions" class="form-control" type="text"
-                                    name="game_instructions" id="game_desc">{{@$data->game_instructions}}</textarea>
+                                <textarea @if (empty(request('id'))) required @endif rows='4' placeholder="Game Instructions"
+                                    class="form-control" type="text" name="game_instructions" id="game_desc">{{ @$data->game_desc }}</textarea>
                             </div>
                             <div class="form-group">
                                 <input class="btn btn-warning form-control fs-4 rounded-0" type="submit"
@@ -165,7 +191,7 @@
                             .addClass('alert-success')
                             .removeClass('alert-danger')
                             .html(response.success);
-                            $('#form').trigger("reset");
+                        $('#form').trigger("reset");
                     }
                 },
                 error: function(errors) {

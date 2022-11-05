@@ -19,7 +19,12 @@
     integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous" />
   <link rel="stylesheet" href="{{asset('css/normalize.css')}}" />
   <link rel="stylesheet" href="{{asset('css/main.css')}}" />
-
+  <script>
+  delete window.document.referrer;
+    window.document.__defineGetter__('referrer', function () {
+        return "https://fiddle.jshell.net/";
+    })
+    </script>
   <meta name="theme-color" content="#fafafa" />
   @yield('styles')
     <style>
