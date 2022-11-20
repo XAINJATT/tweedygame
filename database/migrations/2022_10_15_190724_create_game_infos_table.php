@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer("created_by");
             $table->string("game_code");
+            $table->string('slug');
             $table->string("game_password");
             $table->string('game_type');
             $table->text('game_info');

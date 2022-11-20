@@ -68,12 +68,11 @@ class GameInfoController extends Controller
             }
             $img->save($save_path . $file_360x600);
             $image->storeAs($original_path, $file_original, ['disk' => 'upload_public']);
-
-        }else{
+        } else {
             // return json_encode($request->image__name);
             if (request()->has('game__id')) {
-            $game_image = ['size_360x600' => $request->size_360x600, 'original' => $request->original];
-            }else{
+                $game_image = ['size_360x600' => $request->size_360x600, 'original' => $request->original];
+            } else {
                 $request->validate([
                     'game_image' => "required|max:12400"
                 ]);
@@ -81,7 +80,7 @@ class GameInfoController extends Controller
             // return print_r($game_image);
         }
 
-        
+
         $game_info = [
             'game_title' => $request->game_title,
             'game_color' => $request->game_color,
@@ -98,7 +97,7 @@ class GameInfoController extends Controller
                 'starting_time' => $request->starting_time,
                 'ending_time' => $request->ending_time
             ],
-            'game_image'=>$game_image
+            'game_image' => $game_image
         ];
         // return $game_info;
 
@@ -111,14 +110,18 @@ class GameInfoController extends Controller
         }
         $game->game_info = json_encode($game_info);
         $game->game_code = $request->game_code;
+        $game->name = $request->game_title;
         $game->game_password = Hash::make($request->game_password);
         $game->created_by = Auth::user()->id;
         $game->game_type = 'Game Type';
         $game->game_desc = $request->game_instructions;
 
-
         if ($game->save()) {
-            return ['success' => $msg];
+            $slug = $game->slug;
+            $redirect__msg_route = route('game.task.add',$slug);
+            $redirect__msg = "<script> window.location.replace('$redirect__msg_route') </script>";
+            // return $redirect__msg;
+            return ['success' => $msg . $redirect__msg];
         } else {
             return ['error' => 'There is a problem while creating the game please try again!'] . die(500);
         }

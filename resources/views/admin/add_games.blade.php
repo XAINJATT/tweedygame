@@ -180,7 +180,7 @@
                 contentType: false,
                 success: function(response) {
                     $('#waveLoader').fadeOut();
-                    console.log('success');
+                    console.log(response);
                     $('#results')
                         .css("display", "flex")
                         .hide()

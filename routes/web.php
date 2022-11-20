@@ -43,6 +43,31 @@ Route::group(['prefix' => 'admin', 'middleware' => 'isAdmin'], function () {
         
     });
 
+    Route::group(['prefix' => 'task'], function () {
+        Route::get("add/{slug}", function ($slug) {
+            $data = GameInfo::query()->where('slug',$slug)->first();
+            return view('admin.add_task',["data"=>$data]);
+        })->name('game.task.add');
+
+        Route::get("manage", function () {
+            $data = GameInfoController::show(new GameInfo);
+            return view('admin.manage_games')->with(['data' => $data]);
+        })->name('game.task.manage');
+
+        Route::post("task/add/submit", 'App\Http\Controllers\TaskController@store')->name('task.add.submit');
+
+        Route::get("edit/{id}", function ($id) {
+            $game_data = GameInfo::query()->where('id', $id)->first();
+            return view('admin.add_games')->with(['data' => $game_data]);;
+        })->name('game.task.edit');
+
+        Route::get("delete/{id}", function ($id) {
+            $game_data = GameInfo::query()->where('id', $id)->first();
+            return view('admin.add_games')->with(['data' => $game_data]);
+        })->name('game.task.delete');
+        
+    });
+
     Route::get('/', function () {
         return view('admin.index');
     })->name('admin.home');

@@ -14,7 +14,6 @@ class TaskController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -35,7 +34,63 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'index'   =>   'required|numeric|gt:0',
+        ]);
+
+
+        $creative_image_task = [];
+        $mcqs_array = [];
+        $qr_array = [];
+        if (!empty($request->task_heading)) {
+            foreach ($request->task_heading as $k => $v) {
+                $creative_image_task[$k] = [
+                    'task_heading' => $request->task_heading[$k],
+                    'task_details' => $request->task_details[$k],
+                ];
+            }
+        }
+
+        
+        $answers = [];
+        if (!empty($request->question)) {
+            foreach ($request->question as $k => $v) {
+                echo $k;
+                foreach ($request->answer[$k] as $t => $h) {
+                    
+                    $answers[$t] = [
+                        'answer' => $request->answer[$k][$t],
+                        'true' => $request->right__answer[$k][$t],
+                    ];
+                }
+                $mcqs_array[$k] = [
+                    'question' => $request->question[$k],
+                    'answers' => $answers
+                ];
+            }
+        }
+        print_r($mcqs_array);
+
+        if (!empty($request->qr_text)) {
+            foreach ($request->qr_text as $e => $qr) {
+                $qr_array[$e] = [
+                    'qr_text' => $request->question[$e]
+                ];
+            }
+        }
+
+        $task_data = [
+            'creative_image' => $creative_image_task,
+            'mcqs' => $mcqs_array,
+            'qr_text' => $qr_array
+        ];
+        $q = new Task();
+        $q->game_id = $request->game_id;
+        $q->task_desc = json_encode($task_data);
+        if($q->save()){
+            return response()->json(['status'=>'success','message'=>'Task Created Successfully']);
+        }
+        
     }
 
     /**
