@@ -6,6 +6,8 @@
                 <div class="card-body">
                     <form action="{{ route('task.add.submit') }}" method="POST" id="form">
                         <fieldset>
+                            <input type="hidden" name="task__id" value="{{ $task_data->id ?? '' }}">
+                            @php($task_data_json = json_decode($task_data->task_desc))
                             <legend class="text-center">
                                 Add New Tasks <br>
                                 <small>{{ $data->name }}</small>
@@ -26,17 +28,119 @@
                                 </div>
                             </div>
                             <div id="type_result">
+                                @if (!empty($task_data_json->creative_image))
+                                    @foreach ($task_data_json->creative_image as $item)
+                                        <div id="creative-{{ $loop->index }}">
+                                            <div class="form-group">
+                                                <label for="starting_point">Task Heading *</label>
+                                                <input class="form-control" value="{{ $item->task_heading }}" type="text"
+                                                    name="task_heading[]">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="starting_point">Task Details *</label>
+                                                <textarea class="form-control" type="text" name="task_details[]">{{ $item->task_details }}</textarea>
+                                            </div>
+                                            <div class="form-group input-group w-50">
+                                                <button data-target="#creative-{{ $loop->index }}"
+                                                    class="btn btn-danger remove__answer form-control" style="z-index:1"
+                                                    type="button">X</button>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
+                                @php($question__index = 0)
+                                @if (!empty($task_data_json->mcqs))
+                                    @foreach ($task_data_json->mcqs as $item)
+                                        <div id="questions__div__{{ $loop->index }}">
+                                            <div class="form-group">
+                                                <label for="starting_point">Question *</label>
+                                                <input value="{{ $item->question }}" class="form-control question__input"
+                                                    type="text" name="question[]">
+                                            </div>
+                                            {{-- @dd($item->answers[$loop->index]) --}}
+                                            @foreach ($item->answers as $answer)
+                                                <div id="answer-{{ $loop->index }}">
 
+                                                    <div class="input-group justify-content-between w-100 gx-3 align-items-end"
+                                                        style="flex-wrap:nowrap; gap:20px">
+                                                        <div class="form-group w-100">
+                                                            <label for="starting_point">Answer *</label>
+                                                            <input value="{{ $answer->answer }}"
+                                                                class="form-control mcq__answer" type="text"
+                                                                name="answer[{{ $loop->parent->index }}][]">
+                                                        </div>
+
+                                                        <div class="form-group input-group w-50">
+
+                                                            <button data-type="answer"
+                                                                data-target="#answer-{{ $loop->index }}"
+                                                                class="btn btn-danger remove__answer form-control"
+                                                                style="z-index:1" type="button">X</button>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group d-flex">
+                                                        <label class="m-3" for="right-answer-{{ $loop->index }}">Right
+                                                            Answer?</label>
+                                                        <input id="t_id_{{ $loop->index }}"
+                                                            @if ($answer->true == 1) checked @endif type="hidden"
+                                                            name="right__answer[{{ $loop->parent->index }}][]"
+                                                            value="0">
+                                                        <input class="form-check ml-3"
+                                                            onchange="$('#t_id_{{ $loop->index }}').val(this.checked?1:0)"
+                                                            id="right-answer-{{ $loop->index }}" value="true"
+                                                            type="checkbox"
+                                                            name="right__answer__[{{ $loop->parent->index }}][]">
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                            <div class="input-group justify-content-between w-100 g-3 align-items-end"
+                                                style="flex-wrap:nowrap">
+                                                <div class="form-group  w-100 ml-3 btn-group">
+                                                    <button data-id='#answers__div__{{ $loop->index }}'
+                                                        data-value="{{ $loop->index }}"
+                                                        class="btn btn-warning add__answer form-control" style="z-index:1"
+                                                        type="button">Add Options</button>
+                                                    <button data-type="question"
+                                                        data-target="#questions__div__{{ $loop->index }}"
+                                                        class="btn btn-danger remove__answer form-control" style="z-index:1"
+                                                        type="button">X</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        @php($question__index++)
+                                    @endforeach
+                                @endif
+                                @if (!empty($task_data_json->qr_text))
+                                    @foreach ($task_data_json->qr_text as $item)
+                                        <div id="qr__div__{{ $loop->index }}" class="form-group qr">
+                                            Generated QR Code
+                                            <label for="">Text For QR Code</label>
+                                            <input type="text" placeholder="Text here..."
+                                                value="{{ $item->qr_text ?? 'Text here...' }}" name="qr_text[]"
+                                                class="form-control" id="qrText">
+                                            <div class="m-5 text-center w-100" id="qrcode"></div>
+                                            <div class="form-group  w-100 ml-3 btn-group">
+                                                <button data-target="#qr__div__{{ $loop->index }}"
+                                                    class="btn btn-danger remove__answer form-control" style="z-index:1"
+                                                    type="button">X</button>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @endif
                             </div>
 
                             <div class="form-group">
-                                <input class="btn btn-warning form-control fs-4 rounded-0" type="submit" value="Next Step"
-                                    name="create_game" id="create_game">
+                                <input class="btn btn-warning form-control fs-4 rounded-0" type="submit"
+                                    value="Next Step" name="create_game" id="create_game">
                             </div>
 
                             <div class="form-group">
-                                <input type="hidden" name="number_of_tasks" id="number_of_tasks" value="0">
-                                <input type="hidden" name="number_of_mcqs" id="number_of_mcqs" value="-1">
+                                <input type="hidden" name="number_of_tasks" id="number_of_tasks"
+                                    value="{{ $question__index }}">
+                                <input type="hidden" name="number_of_mcqs" id="number_of_mcqs"
+                                    value="{{ $question__index - 1 }}">
                                 <input type="hidden" name="game_id" value="{{ $data->id }}">
                                 <div id="results" style="display: none" class="alert alert-danger">
 
@@ -59,18 +163,15 @@
             new QRCode(document.getElementById("qrcode"), elText.value);
         }
 
-        // makeCode();
+        makeCode();
 
         // $("#qrText").on("blur", function() {
         //     makeCode();
         // }).
-        // on("keydown", function(e) {
-
-        //     if (e.keyCode == 13) {
-        //         e.preventDefault()
-        //         makeCode();
-        //     }
-        // });
+        $("#qrText").on("input", function(e) {
+            e.preventDefault()
+            makeCode();
+        });
     </script>
     <script>
         $(document).ready(function() {
@@ -81,6 +182,7 @@
                 let __str = "";
                 let __qr = "";
                 qr = false;
+                question__val = $('#number_of_mcqs').val();
                 let __value = $('#game_type').val();
 
                 switch (__value) {
@@ -118,7 +220,7 @@
                                 </div>
 
                             </div>`
-                            $('#number_of_mcqs').val(Number($('#number_of_mcqs').val())+Number(1))
+                        $('#number_of_mcqs').val(Number($('#number_of_mcqs').val()) + Number(1))
                         break;
                     case 'qr_code':
                         __qr = `<div id="qr__div__${index__val}" class="form-group qr">
@@ -202,7 +304,7 @@
                 if ($(this).data('type') !== 'answer') {
                     $("#number_of_tasks").val(Number($("#number_of_tasks").val()) - Number(1))
                 }
-                if($(this).data('type')== 'question'){
+                if ($(this).data('type') == 'question') {
                     $("#number_of_mcqs").val(Number($("#number_of_mcqs").val()) - Number(1));
                 }
             }
@@ -254,12 +356,12 @@
                             .hide()
                             .fadeIn();
                         $('#results').html(response);
-                        if (response.success) {
+                        if (response.status == "success") {
                             $('#results')
                                 .addClass('alert-success')
                                 .removeClass('alert-danger')
                                 .html(response.success);
-                            $('#form').trigger("reset");
+                            // $('#form').trigger("reset");
                         }
                     },
                     error: function(errors) {

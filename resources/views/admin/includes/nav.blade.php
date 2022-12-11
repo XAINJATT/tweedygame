@@ -1,10 +1,9 @@
-
 <div id="sideNav">
     <div class="nav bg-warning">
         <div id="mySidenav" class="sidenav">
             <ul class="nav flex-column">
                 <li><a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a></li>
-                <li><a href="./index">Home</a></li>
+                <li><a href="/">Home</a></li>
                 <li class="dropdown">
                     <a href="#" type="button" class="dropdown-toggle" data-bs-toggle="dropdown"
                         aria-expanded="false">Users</a>
@@ -17,8 +16,8 @@
                     <a href="#" type="button" class="dropdown-toggle" data-bs-toggle="dropdown"
                         aria-expanded="false">Games</a>
                     <ul class="dropdown-menu dropdown-menu-lg-end bg-warning text-dark">
-                        <li><a href="{{route('game.add')}}">Create New</a></li>
-                        <li><a href="{{route('game.manage')}}">Manage</a></li>
+                        <li><a href="{{ route('game.add') }}">Create New</a></li>
+                        <li><a href="{{ route('game.manage') }}">Manage</a></li>
                     </ul>
                 </li>
 

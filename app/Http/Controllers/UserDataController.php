@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GameInfo;
 use App\Models\User;
 use App\Models\UserData;
 use Illuminate\Contracts\Session\Session;
@@ -20,15 +21,30 @@ class UserDataController extends Controller
     public function index(Request $request)
     {
         $request->validate([
-            'email'=>'required',
-            'password'=>'required'
+            'email' => 'required',
+            'password' => 'required'
         ]);
         $input = $request->all();
         //$fieldType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-        if(auth()->attempt(array('email' => $input['email'], 'password' => $input['password'])))
-        {
-            return 'Logged in !!!' .'<script> window.location.replace("'.route('admin.home').'") </script>';
-        }else{
+        if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password']))) {
+            return 'Logged in !!!' . '<script> window.location.replace("' . route('admin.home') . '") </script>';
+        } else {
+            return 'Email-Address or Password is Wrong';
+        }
+    }
+    public function gameLogin(Request $request, User $user)
+    {
+        $request->validate([
+            'game_code' => 'required',
+            'password' => 'required'
+        ]);
+        $gameInfo = GameInfo::query()->where("game_code", $request->game_code)->first();
+        //$fieldType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+
+        if ($request->game_code == $gameInfo->game_code) {
+            Auth::login($user);
+            return 'Logged in !!!' . '<script> window.location.replace("' . route('admin.home') . '") </script>';
+        } else {
             return 'Email-Address or Password is Wrong';
         }
     }
@@ -51,7 +67,6 @@ class UserDataController extends Controller
      */
     public function store(Request $request)
     {
-       
     }
 
     /**
@@ -101,8 +116,8 @@ class UserDataController extends Controller
 
     public function logout()
     {
-       FacadesSession::flush();
-        
+        FacadesSession::flush();
+
         Auth::logout();
 
         return redirect('login');

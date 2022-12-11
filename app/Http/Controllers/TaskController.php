@@ -51,13 +51,13 @@ class TaskController extends Controller
             }
         }
 
-        
+
         $answers = [];
         if (!empty($request->question)) {
             foreach ($request->question as $k => $v) {
                 echo $k;
                 foreach ($request->answer[$k] as $t => $h) {
-                    
+
                     $answers[$t] = [
                         'answer' => $request->answer[$k][$t],
                         'true' => $request->right__answer[$k][$t],
@@ -69,8 +69,6 @@ class TaskController extends Controller
                 ];
             }
         }
-        print_r($mcqs_array);
-
         if (!empty($request->qr_text)) {
             foreach ($request->qr_text as $e => $qr) {
                 $qr_array[$e] = [
@@ -84,13 +82,17 @@ class TaskController extends Controller
             'mcqs' => $mcqs_array,
             'qr_text' => $qr_array
         ];
-        $q = new Task();
+        if (!empty($request->task__id)) {
+            $q = Task::find($request->task__id);
+        } else {
+            $q = new Task();
+        }
+
         $q->game_id = $request->game_id;
         $q->task_desc = json_encode($task_data);
-        if($q->save()){
-            return response()->json(['status'=>'success','message'=>'Task Created Successfully']);
+        if ($q->save()) {
+            return response()->json(['status' => 'success', 'message' => 'Task Created Successfully']);
         }
-        
     }
 
     /**

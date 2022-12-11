@@ -41,7 +41,7 @@
 
 <body>
   <div class="max-width-mobile">
-    <div id="waveLoader" style="left: 0; top: 0; z-index: 1; display: flex;" class="bg-light justify-content-center align-items-center vh-100 w-100 position-fixed">
+    <div id="waveLoader" style="left: 0; top: 0; display: flex;" class="bg-light justify-content-center align-items-center vh-100 w-100 position-fixed">
       <div class="wavecontainer">
         <div class="wave"></div>
         <div class="wave"></div>

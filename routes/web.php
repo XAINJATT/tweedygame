@@ -3,6 +3,7 @@
 use App\Http\Controllers\GameInfoController;
 use App\Http\Controllers\UserDataController;
 use App\Models\GameInfo;
+use App\Models\Task;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,67 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//ADMIN ROUTES
-Route::group(['prefix' => 'admin', 'middleware' => 'isAdmin'], function () {
-    //GAME ROUTES
-    Route::group(['prefix' => 'game'], function () {
-        Route::get("add", function () {
-            return view('admin.add_games');
-        })->name('game.add');
-
-        Route::get("manage", function () {
-            $data = GameInfoController::show(new GameInfo);
-            return view('admin.manage_games')->with(['data' => $data]);
-        })->name('game.manage');
-
-        Route::post("game/add/submit", 'App\Http\Controllers\GameInfoController@store')->name('game.add.submit');
-
-        Route::get("edit/{id}", function ($id) {
-            $game_data = GameInfo::query()->where('id', $id)->first();
-            return view('admin.add_games')->with(['data' => $game_data]);;
-        })->name('game.edit');
-
-        Route::get("delete/{id}", function ($id) {
-            $game_data = GameInfo::query()->where('id', $id)->first();
-            return view('admin.add_games')->with(['data' => $game_data]);
-        })->name('game.delete');
-        
-    });
-
-    Route::group(['prefix' => 'task'], function () {
-        Route::get("add/{slug}", function ($slug) {
-            $data = GameInfo::query()->where('slug',$slug)->first();
-            return view('admin.add_task',["data"=>$data]);
-        })->name('game.task.add');
-
-        Route::get("manage", function () {
-            $data = GameInfoController::show(new GameInfo);
-            return view('admin.manage_games')->with(['data' => $data]);
-        })->name('game.task.manage');
-
-        Route::post("task/add/submit", 'App\Http\Controllers\TaskController@store')->name('task.add.submit');
-
-        Route::get("edit/{id}", function ($id) {
-            $game_data = GameInfo::query()->where('id', $id)->first();
-            return view('admin.add_games')->with(['data' => $game_data]);;
-        })->name('game.task.edit');
-
-        Route::get("delete/{id}", function ($id) {
-            $game_data = GameInfo::query()->where('id', $id)->first();
-            return view('admin.add_games')->with(['data' => $game_data]);
-        })->name('game.task.delete');
-        
-    });
-
-    Route::get('/', function () {
-        return view('admin.index');
-    })->name('admin.home');
-});
-
-Route::get('admin/login', function () {
-    return view('admin.login-in');
-})->name('admin.login');
-
+include __DIR__."\admin.php";
 
 Route::get('/logout', 'App\Http\Controllers\UserDataController@logout')->name('logout.perform');
 
@@ -86,39 +27,40 @@ Route::get('/login', function () {
 })->name('user.login');
 
 Route::post('login/submit', 'App\Http\Controllers\UserDataController@index')->name('login.submit');
+Route::post('game/login/submit', 'App\Http\Controllers\UserDataController@gameLogin')->name('game.login.submit');
 
 
 //FRONTED ROUTES
 Route::get('/', function () {
-    return view('frontend.index');
+    return view('frontend.index')->name("home");
 });
 Route::get('/index', function () {
-    return view('frontend.index');
+    return view('frontend.index')->name("frontend.home");
 });
 Route::get('/home', function () {
-    return view('frontend.index');
+    return view('frontend.index')->name("home");
 });
 Route::get('/game-info', function () {
-    return view('frontend.game-info');
+    return view('frontend/game-info')->name("game_info");
 });
 Route::get('/sign-in', function () {
-    return view('frontend.sign-in');
+    return view('frontend/sign-in')->name("sign_in");
 });
 Route::get('/multiple-choice', function () {
-    return view('frontend.multiple-choice');
+    return view('frontend/multiple-choice')->name("multiple_choice");
 });
 Route::get('/task-qr', function () {
-    return view('frontend.task-qr');
+    return view('frontend/task-qr');
 });
 Route::get('/task-image', function () {
-    return view('frontend.task-image');
+    return view('frontend.task-image')->name("task_image");
 });
 Route::get('/task-map', function () {
-    return view('frontend.task-map');
+    return view('frontend.task-map')->name("task_map");
 });
 Route::get('/task-image', function () {
-    return view('frontend.task-image');
+    return view('frontend.task-image')->name("task_image");
 });
 Route::get('/404', function () {
-    return view('frontend.404');
+    return view('frontend.404')->name("404");
 });
